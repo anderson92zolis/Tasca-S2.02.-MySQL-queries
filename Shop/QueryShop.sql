@@ -161,4 +161,27 @@ SELECT   producto.nombre AS 'Nombre Producto' From producto
 LEFT JOIN fabricante ON producto.codigo_fabricante=fabricante.codigo
 WHERE fabricante.nombre IN ('Lenovo');
 
--- 37) Retorna totes les dades dels productes que tenen el mateix preu que el producte més car del fabricant Lenovo. (Sense usar INNER JOIN).
+-- 37) Retorna totes les dades dels productes que tenen el mateix preu que el producte més car del fabricant Lenovo. (Sense usar INNER JOIN).   
+SELECT producto.codigo AS 'Código Producto', producto.nombre AS 'Nombre Producto', producto.precio AS 'Precio Producto', producto.codigo_fabricante AS 'Código Fabricante', fabricante.nombre AS 'Nombre Fabricante'  From producto
+LEFT JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo
+WHERE precio= (SELECT MAX(producto.precio) FROM producto WHERE fabricante.nombre = 'Lenovo');
+																								
+-- 38) Llista el nom del producte més car del fabricant Lenovo.
+SELECT producto.codigo AS 'Código Producto', producto.nombre AS 'Nombre Producto', producto.precio AS 'Precio Producto', producto.codigo_fabricante AS 'Código Fabricante', fabricante.nombre AS 'Nombre Fabricante'  From producto
+INNER JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo
+WHERE precio = (SELECT MAX(producto.precio) FROM producto  INNER JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo WHERE fabricante.nombre = 'Lenovo' );   --  -> more expensive that MAX(price of LENOVO)
+
+-- 39) Llista el nom del producte més barat del fabricant Hewlett-Packard.
+SELECT producto.codigo AS 'Código Producto', producto.nombre AS 'Nombre Producto', producto.precio AS 'Precio Producto', producto.codigo_fabricante AS 'Código Fabricante', fabricante.nombre AS 'Nombre Fabricante'  From producto
+INNER JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo
+WHERE precio= (SELECT MIN(producto.precio) FROM producto  INNER JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo WHERE fabricante.nombre = 'Hewlett-Packard' );               -- -> "Other solution "    WHERE precio= (SELECT MIN(producto.precio) FROM producto) AND fabricante.nombre = 'Hewlett-Packard';  
+												 
+-- 40) Retorna tots els productes de la base de dades que tenen un preu major o igual al producte més car del fabricant Lenovo.
+SELECT producto.codigo AS 'Código Producto', producto.nombre AS 'Nombre Producto', producto.precio AS 'Precio Producto', producto.codigo_fabricante AS 'Código Fabricante', fabricante.nombre AS 'Nombre Fabricante'  From producto
+INNER JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo
+WHERE precio >= (SELECT MAX(producto.precio) FROM producto  INNER JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo WHERE fabricante.nombre = 'Lenovo' ); 
+
+-- 41)  Llesta tots els productes del fabricant Asus que tenen un preu superior al preu mitjà de tots els seus productes.
+SELECT producto.codigo AS 'Código Producto', producto.nombre AS 'Nombre Producto', producto.precio AS 'Precio Producto', producto.codigo_fabricante AS 'Código Fabricante', fabricante.nombre AS 'Nombre Fabricante'  From producto
+INNER JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo
+WHERE fabricante.nombre = 'Asus' AND  precio >= (SELECT AVG(producto.precio) FROM producto INNER JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo WHERE fabricante.nombre = 'Asus' ) ; 
