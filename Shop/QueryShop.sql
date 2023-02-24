@@ -23,6 +23,7 @@ SELECT lOWER(nombre) AS nombre, precio FROM tienda.producto;
 
 -- 8) Llista el nom de tots els fabricants en una columna, i en una altra columna obtingui en majúscules els dos primers caràcters del nom del fabricant.nombre    link-> W3SCHOOL SUBTRING &  https://www.tutorialspoint.com/How-can-we-capitalize-only-first-letter-of-a-string-with-the-help-of-MySQL-function-s
 SELECT nombre, CONCAT(UPPER(SUBSTRING(nombre,1,2)) , LOWER(SUBSTRING(nombre,3)) ) as Nombre FROM tienda.fabricante;
+-- SELECT nombre, ucase(LEFT(nombre,2)) FROM tienda.fabricante; solo dos caracteres.
 
 -- 9) Llista els noms i els preus de tots els productes de la taula producto, arrodonint el valor del preu.
 SELECT nombre, ROUND(precio) AS precio FROM tienda.producto;
@@ -167,9 +168,25 @@ LEFT JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo
 WHERE precio= (SELECT MAX(producto.precio) FROM producto WHERE fabricante.nombre = 'Lenovo');
 																								
 -- 38) Llista el nom del producte més car del fabricant Lenovo.
-SELECT producto.codigo AS 'Código Producto', producto.nombre AS 'Nombre Producto', producto.precio AS 'Precio Producto', producto.codigo_fabricante AS 'Código Fabricante', fabricante.nombre AS 'Nombre Fabricante'  From producto
-INNER JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo
-WHERE precio = (SELECT MAX(producto.precio) FROM producto  INNER JOIN fabricante ON producto.codigo_fabricante= fabricante.codigo WHERE fabricante.nombre = 'Lenovo' );   --  -> more expensive that MAX(price of LENOVO)
+SELECT 
+    producto.codigo AS 'Código Producto',
+    producto.nombre AS 'Nombre Producto',
+    producto.precio AS 'Precio Producto',
+    producto.codigo_fabricante AS 'Código Fabricante',
+    fabricante.nombre AS 'Nombre Fabricante'
+FROM
+    producto
+        INNER JOIN
+    fabricante ON producto.codigo_fabricante = fabricante.codigo
+WHERE
+    precio = (SELECT 
+            MAX(producto.precio)
+        FROM
+            producto
+                INNER JOIN
+            fabricante ON producto.codigo_fabricante = fabricante.codigo
+        WHERE
+            fabricante.nombre = 'Lenovo');   --  -> more expensive that MAX(price of LENOVO)
 
 -- 39) Llista el nom del producte més barat del fabricant Hewlett-Packard.
 SELECT producto.codigo AS 'Código Producto', producto.nombre AS 'Nombre Producto', producto.precio AS 'Precio Producto', producto.codigo_fabricante AS 'Código Fabricante', fabricante.nombre AS 'Nombre Fabricante'  From producto
